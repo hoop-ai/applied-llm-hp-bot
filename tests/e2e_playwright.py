@@ -68,6 +68,14 @@ def _assert_contains(page, needle: str, label: str, results: list[tuple[str, boo
 
 
 def main() -> int:
+    # Page bodies regularly contain emoji that can't encode to Windows cp1252.
+    # Force stdout to UTF-8 with replacement so the result print loop never
+    # blows up on a stray emoji in a captured detail string.
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError):
+        pass
+
     env = os.environ.copy()
     env["STREAMLIT_SERVER_HEADLESS"] = "true"
     env["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
