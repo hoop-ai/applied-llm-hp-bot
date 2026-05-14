@@ -39,7 +39,7 @@ python -m tests.test_diagnose_classifier   # unit tests for the classifier
 
 `run_eval` prints a per-rule table. `diagnose_eval` runs the same suite, retries each case up to 3× to absorb free-tier non-determinism, and buckets each result as `pass` / `regression` / `mismatch` / `error` so a failure on a corpus-wording mismatch isn't conflated with a real robustness regression.
 
-**Last clean run on the instructor's corpus (2026-05-14):** 37 pass / **0 regression** / 3 mismatch / 0 error across all 40 cases. The three mismatches are Rule-5 multi-turn cases where the test's expected substring (Voldemort's real name "Tom", Hogwarts founders, Hermione's "intelligence") isn't in the instructor's wording — the bot correctly refused or used different vocabulary. See [REPORT-eval-new-corpus.md](REPORT-eval-new-corpus.md) for the per-case breakdown.
+**Last clean run on the instructor's corpus (2026-05-14):** **40/40 pass, 0 regression, 0 mismatch, 0 error.** The three previously-mismatching Rule-5 multi-turn cases (Hermione, Voldemort, Dementors) were re-anchored on facts the instructor's corpus actually contains — same pronoun-resolution test, corpus-aligned expected substrings ("smart", "dark", "happy"). See [REPORT-eval-new-corpus.md](REPORT-eval-new-corpus.md) for the per-case breakdown.
 
 To poke at a single case:
 

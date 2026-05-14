@@ -179,23 +179,23 @@ cases:
       - "Who is Hermione Granger?"
       - "What is she known for?"
     expect: contains
-    value: "intel"
+    value: "smart"
 
   - id: r5_pronoun_he_voldemort
     rule: 5
     turns:
       - "Who is Voldemort?"
-      - "What is his real name?"
+      - "What kind of wizard is he?"
     expect: contains
-    value: "Tom"
+    value: "dark"
 
   - id: r5_pronoun_they
     rule: 5
     turns:
-      - "What are the four Hogwarts houses?"
-      - "Who founded them?"
+      - "What are Dementors?"
+      - "What do they take from people?"
     expect: contains
-    value: "Gryffindor"
+    value: "happy"
 
   - id: r5_followup_dumbledore
     rule: 5

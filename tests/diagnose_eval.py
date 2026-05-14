@@ -157,6 +157,11 @@ def _trunc(s: str, n: int = 200) -> str:
 def _verdict(totals: dict[str, int]) -> str:
     total = sum(totals.values())
     if totals['regression'] == 0 and totals['error'] == 0:
+        if totals['mismatch'] == 0:
+            return (
+                f"All {total} adversarial cases pass on the new corpus. The six graded "
+                f"behavioral rules hold."
+            )
         return (
             f"All {total} adversarial cases pass on the new corpus, modulo "
             f"{totals['mismatch']} corpus-mismatch case(s) (rules 5/6) where the bot correctly refused "
