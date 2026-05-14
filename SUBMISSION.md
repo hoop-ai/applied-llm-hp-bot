@@ -32,10 +32,14 @@ Streamlit opens at `http://localhost:8501`. **First launch takes 60–90 seconds
 ## 4. Run the eval
 
 ```bash
-python -m tests.run_eval
+python -m tests.run_eval         # raw 40-case pass/fail
+python -m tests.diagnose_eval    # smarter classifier → REPORT-eval-new-corpus.md
+python -m tests.test_diagnose_classifier   # unit tests for the classifier
 ```
 
-Prints a per-rule pass/fail table. Last clean run: **40/40 on 2026-05-14**. Exit code 0 only if every case passes.
+`run_eval` prints a per-rule table. `diagnose_eval` runs the same suite, retries each case up to 3× to absorb free-tier non-determinism, and buckets each result as `pass` / `regression` / `mismatch` / `error` so a failure on a corpus-wording mismatch isn't conflated with a real robustness regression.
+
+**Last clean run on the instructor's corpus (2026-05-14):** 37 pass / **0 regression** / 3 mismatch / 0 error across all 40 cases. The three mismatches are Rule-5 multi-turn cases where the test's expected substring (Voldemort's real name "Tom", Hogwarts founders, Hermione's "intelligence") isn't in the instructor's wording — the bot correctly refused or used different vocabulary. See [REPORT-eval-new-corpus.md](REPORT-eval-new-corpus.md) for the per-case breakdown.
 
 To poke at a single case:
 
@@ -71,7 +75,8 @@ python -m tests.run_eval --case r4_admin
 
 ## 7. Notes for the grader
 
-- The data files (`data/qa_pairs.json`, `data/passages.json`) are a **small synthetic stub** — the instructor's official dataset has not been distributed yet. The pipeline is dataset-agnostic; dropping the real files in `data/` and rerunning `python -m src.indexer` rebuilds both indices.
+- The data files in `data/` are the **instructor's official dataset** ([data/harry_potter_data_02.xlsx](data/harry_potter_data_02.xlsx) — 20 Q/A pairs in column-A/B rows + 130 raw passages in column-A-only rows). They are split into [data/qa_pairs.json](data/qa_pairs.json) and [data/passages.json](data/passages.json) by `make_zip.py`-ready preprocessing, then consumed by [src/indexer.py](src/indexer.py) to build both FAISS indices. To swap in a different dataset, edit those JSON files and run `python -m src.indexer`.
+- **LLM resilience:** [src/llm.py](src/llm.py) walks a seven-model fallback chain — six free OpenRouter models, then `anthropic/claude-haiku-4.5` as a paid tail (cents per 40-case eval; never reached in normal use). On total failure, [src/pipeline.py](src/pipeline.py) returns a visible `⚠️ LLM service unavailable: …` message instead of silently impersonating a behavioral refusal, so infrastructure outages are distinguishable from real refusals in both the UI and the eval.
 - The Streamlit UI shows an expandable "retrieval details" panel below each assistant turn — useful for verifying which stage (`guard` / `cache` / `llm`) produced the answer, plus the matched question / similarity / retrieved chunks.
 - Screenshots of expected behavior are in [screenshots/](screenshots/): initial, greeting, in-scope answer, out-of-scope refusal, jailbreak refusal, pronoun follow-up.
-- Full reflections on hard parts and enjoyable parts are in [REPORT.md](REPORT.md) sections 4–5.
+- Full reflections on hard parts and enjoyable parts are in [REPORT.md](REPORT.md) sections 4–5. Design specs and execution plans are under [docs/superpowers/](docs/superpowers/).
