@@ -14,7 +14,7 @@ from typing import Iterable
 import requests
 from dotenv import load_dotenv
 
-from .prompts import REFUSAL, build_prompt
+from .prompts import build_prompt
 
 load_dotenv()
 
@@ -88,21 +88,19 @@ def _candidate_models() -> Iterable[str]:
 
 
 def call(user_message: str, context: str, history: str) -> str:
-    """Single call point. Builds the full prompt and tries fallback models."""
+    """Single call point. Builds the full prompt and tries fallback models.
+
+    On total failure (every model in the chain raised), re-raises the last
+    LLMError instead of disguising the outage as a behavioral REFUSAL. The
+    pipeline catches this and renders a visible "service unavailable" string.
+    """
     full_prompt = build_prompt(context=context, history=history, user_message=user_message)
-    # We split system vs user halves on the "# Current user message" marker so
-    # the chat API sees a proper system/user pair. Everything before that line
-    # is system instructions + retrieved context + history; the user line is
-    # the raw question.
-    last_error: Exception | None = None
+    last_error: LLMError | None = None
     for model in _candidate_models():
         try:
             return _post(model=model, system_text=full_prompt, user_text=user_message)
         except LLMError as e:
             last_error = e
             continue
-    # If every model failed we degrade to a safe refusal rather than crashing
-    # the UI. Surface the error for debugging via stderr.
-    import sys
-    print(f"[llm] all models failed; last error: {last_error}", file=sys.stderr)
-    return REFUSAL
+    assert last_error is not None  # loop ran at least once
+    raise last_error

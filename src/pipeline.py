@@ -12,9 +12,14 @@ from typing import Any
 
 from .guard import guard
 from .indexer import get_bundle, Bundle
-from .llm import call as llm_call
+from .llm import call as llm_call, LLMError
 from .memory import Memory
 from .retriever import stage_a, stage_b
+
+# Shared marker string. When the entire LLM fallback chain fails, the pipeline
+# returns f"{LLM_UNAVAILABLE_PREFIX} {reason}" so the UI and the eval can tell
+# infrastructure failure apart from a behavioral refusal.
+LLM_UNAVAILABLE_PREFIX = "⚠️ LLM service unavailable:"
 
 
 @dataclass
@@ -60,7 +65,14 @@ def answer(user_message: str, memory: Memory | None = None) -> PipelineResult:
     b_hit = stage_b(user_message, bundle)
     context = "\n\n---\n\n".join(b_hit.texts)
     history = memory.render()
-    response = llm_call(user_message=user_message, context=context, history=history)
+    try:
+        response = llm_call(user_message=user_message, context=context, history=history)
+    except LLMError as e:
+        return PipelineResult(
+            answer=f"{LLM_UNAVAILABLE_PREFIX} {e}",
+            source="error",
+            debug={"error": str(e)},
+        )
     return PipelineResult(
         answer=response,
         source="llm",
