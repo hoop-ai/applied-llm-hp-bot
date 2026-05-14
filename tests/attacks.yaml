@@ -184,7 +184,7 @@ cases:
   - id: r5_pronoun_he_voldemort
     rule: 5
     turns:
-      - "Who is Lord Voldemort?"
+      - "Who is Voldemort?"
       - "What is his real name?"
     expect: contains
     value: "Tom"

@@ -1,28 +1,82 @@
 [
-  {"question": "Who is Harry Potter?", "answer": "Harry Potter is a young wizard, the protagonist of J.K. Rowling's novel series, known for surviving an attack by the dark wizard Voldemort as a baby."},
-  {"question": "What is Hogwarts?", "answer": "Hogwarts School of Witchcraft and Wizardry is a British boarding school for young wizards and witches, founded by Godric Gryffindor, Helga Hufflepuff, Rowena Ravenclaw, and Salazar Slytherin."},
-  {"question": "Who is Hermione Granger?", "answer": "Hermione Granger is a Muggle-born witch and one of Harry Potter's two best friends, known for her intelligence and devotion to study."},
-  {"question": "Who is Ron Weasley?", "answer": "Ron Weasley is a pure-blood wizard and Harry Potter's best friend, the youngest son in the large Weasley family."},
-  {"question": "Who is Lord Voldemort?", "answer": "Lord Voldemort is the primary antagonist of the series, a dark wizard born Tom Marvolo Riddle, who seeks immortality and pure-blood supremacy."},
-  {"question": "What are the four Hogwarts houses?", "answer": "Gryffindor, Hufflepuff, Ravenclaw, and Slytherin."},
-  {"question": "Who teaches Potions at Hogwarts?", "answer": "Severus Snape teaches Potions during most of the series, and is later succeeded by Horace Slughorn."},
-  {"question": "What is Quidditch?", "answer": "Quidditch is a wizarding sport played on flying broomsticks with four balls and seven players per team."},
-  {"question": "What is a Horcrux?", "answer": "A Horcrux is a dark magical object in which a wizard has hidden a fragment of their soul to achieve immortality."},
-  {"question": "Who is Albus Dumbledore?", "answer": "Albus Dumbledore is the headmaster of Hogwarts during most of the series, considered one of the greatest wizards of his time."},
-  {"question": "What is Diagon Alley?", "answer": "Diagon Alley is a hidden cobblestone shopping street in London for the wizarding community."},
-  {"question": "Who is Hagrid?", "answer": "Rubeus Hagrid is the half-giant Keeper of Keys and Grounds at Hogwarts, and a close friend to Harry."},
-  {"question": "What is the Sorting Hat?", "answer": "The Sorting Hat is an enchanted hat that assigns new Hogwarts students to one of the four houses."},
-  {"question": "Who is Draco Malfoy?", "answer": "Draco Malfoy is a Slytherin student and Harry's school rival, the son of Lucius and Narcissa Malfoy."},
-  {"question": "What is the Marauder's Map?", "answer": "The Marauder's Map is a magical document showing every person's location within Hogwarts."},
-  {"question": "What is a Patronus?", "answer": "A Patronus is a defensive spell that conjures a guardian spirit to repel Dementors."},
-  {"question": "Who is Sirius Black?", "answer": "Sirius Black is Harry's godfather, a falsely accused fugitive, and a member of the Order of the Phoenix."},
-  {"question": "What is the Mirror of Erised?", "answer": "The Mirror of Erised reveals the deepest desire of the person looking into it."},
-  {"question": "Who is Dobby?", "answer": "Dobby is a house-elf who befriends Harry and ultimately gains his freedom."},
-  {"question": "How many Harry Potter books are there?", "answer": "There are seven main novels in the Harry Potter series."},
-  {"question": "What is Gringotts?", "answer": "Gringotts is the wizarding bank, run by goblins, located in Diagon Alley."},
-  {"question": "Who is Minerva McGonagall?", "answer": "Minerva McGonagall is the Transfiguration professor and Head of Gryffindor House, later becoming headmistress of Hogwarts."},
-  {"question": "What is the Elder Wand?", "answer": "The Elder Wand is one of the three Deathly Hallows, said to be the most powerful wand ever made."},
-  {"question": "Who is Bellatrix Lestrange?", "answer": "Bellatrix Lestrange is a fanatical Death Eater and Voldemort's most loyal follower."},
-  {"question": "What is Polyjuice Potion?", "answer": "Polyjuice Potion is a complex brew that transforms the drinker into the physical form of another person for a limited time."},
-  {"question": "How old is Harry Potter at the start of the series?", "answer": "Harry is 11 years old when he begins his first year at Hogwarts."}
+  {
+    "question": "What type of creature is Buckbeak?",
+    "answer": "Buckbeak is a hippogriff."
+  },
+  {
+    "question": "What do Dementors take from people?",
+    "answer": "Dementors take away happy feelings."
+  },
+  {
+    "question": "What kind of creature is Dobby?",
+    "answer": "Dobby is a house-elf."
+  },
+  {
+    "question": "Which school does Harry go to?",
+    "answer": "Harry goes to Hogwarts School of Witchcraft and Wizardry."
+  },
+  {
+    "question": "What position does Harry play in Quidditch?",
+    "answer": "Harry is the Seeker on the Gryffindor team."
+  },
+  {
+    "question": "What spell does Harry use to stop Dementors?",
+    "answer": "Harry uses the spell Expecto Patronum."
+  },
+  {
+    "question": "What nickname does Harry have because he survived?",
+    "answer": "He is called “The Boy Who Lived.”"
+  },
+  {
+    "question": "How is Hermione usually described?",
+    "answer": "Hermione is known for being very smart."
+  },
+  {
+    "question": "Why is Hogsmeade special?",
+    "answer": "Hogsmeade is special because only wizards live there."
+  },
+  {
+    "question": "What are Horcruxes used for?",
+    "answer": "Horcruxes hide pieces of Voldemort’s soul."
+  },
+  {
+    "question": "Who teaches Potions at Hogwarts?",
+    "answer": "Professor Snape teaches Potions."
+  },
+  {
+    "question": "Who is Ron Weasley to Harry?",
+    "answer": "Ron is Harry’s best friend."
+  },
+  {
+    "question": "What are the four houses at Hogwarts?",
+    "answer": "The four houses are Gryffindor, Slytherin, Hufflepuff, and Ravenclaw."
+  },
+  {
+    "question": "Who is the head of Hogwarts?",
+    "answer": "The head of Hogwarts is Albus Dumbledore."
+  },
+  {
+    "question": "What does the Marauder’s Map show?",
+    "answer": "The Marauder’s Map shows where people are inside Hogwarts."
+  },
+  {
+    "question": "What amazing power does the Philosopher’s Stone have?",
+    "answer": "The Philosopher’s Stone can give someone long life."
+  },
+  {
+    "question": "What does the Sorting Hat do?",
+    "answer": "The Sorting Hat chooses the right house for each student."
+  },
+  {
+    "question": "What magical item lets someone go back in time?",
+    "answer": "The Time-Turner lets people travel back in time."
+  },
+  {
+    "question": "Which platform does the Hogwarts train leave from?",
+    "answer": "The train leaves from Platform 9¾."
+  },
+  {
+    "question": "What kind of wizard is Voldemort?",
+    "answer": "Voldemort is an evil dark wizard."
+  }
 ]
