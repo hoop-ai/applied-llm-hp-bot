@@ -30,6 +30,9 @@ FALLBACK_MODELS = [
     "openai/gpt-oss-120b:free",
     "qwen/qwen3-next-80b-a3b-instruct:free",
     "meta-llama/llama-3.3-70b-instruct:free",
+    # Paid tail. Reliable and cheap; only reached when every free model above
+    # has refused or rate-limited the request, so day-to-day cost is ~zero.
+    "anthropic/claude-haiku-4.5",
 ]
 
 
