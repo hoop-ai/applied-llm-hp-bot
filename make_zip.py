@@ -20,6 +20,8 @@ INCLUDE_FILES = [
     "requirements.txt",
     "README.md",
     "REPORT.md",
+    "REPORT-eval-new-corpus.md",
+    "SUBMISSION.md",
     ".env",
     ".env.example",
     ".gitignore",
