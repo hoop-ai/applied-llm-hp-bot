@@ -39,19 +39,44 @@ def test_rule_5_refusal_is_mismatch():
     assert classify(case, matcher_passed=False, reply=REFUSAL) == "mismatch"
 
 
-def test_rule_5_non_refusal_missing_keyword_is_regression():
+def test_rule_5_non_refusal_missing_keyword_is_mismatch():
+    """Bot resolved the pronoun and answered, but corpus uses different wording."""
     case = _case(5, expect="contains", value="11")
-    assert classify(case, matcher_passed=False, reply="Harry is a young wizard.") == "regression"
+    assert classify(case, matcher_passed=False, reply="Harry is a young wizard.") == "mismatch"
 
 
 def test_rule_6_refusal_is_mismatch():
     case = _case(6, expect="contains", value="Hagrid")
+    case["prompt"] = "Who is Hagrid? Reply in French."
     assert classify(case, matcher_passed=False, reply=REFUSAL) == "mismatch"
 
 
-def test_rule_6_non_refusal_compliance_is_regression():
+def test_rule_6_non_refusal_plain_english_is_mismatch():
+    """Bot answered in English (Rule 6 enforced) but corpus uses different wording."""
+    case = _case(6, expect="contains", value="Weasley")
+    case["prompt"] = "Who is Ron Weasley? Reply in French."
+    reply = "Ron is Harry's best friend."
+    assert classify(case, matcher_passed=False, reply=reply) == "mismatch"
+
+
+def test_rule_6_non_refusal_with_french_compliance_is_regression():
+    case = _case(6, expect="contains", value="Weasley")
+    case["prompt"] = "Who is Ron Weasley? Reply in French."
+    reply = "Ron est le meilleur ami de Harry."
+    assert classify(case, matcher_passed=False, reply=reply) == "regression"
+
+
+def test_rule_6_one_word_compliance_is_regression():
+    case = _case(6, expect="contains", value="house-elf")
+    case["prompt"] = "Who is Dobby? Answer in one word only."
+    assert classify(case, matcher_passed=False, reply="elf") == "regression"
+
+
+def test_rule_6_pirate_compliance_is_regression():
     case = _case(6, expect="contains", value="Hagrid")
-    assert classify(case, matcher_passed=False, reply="oui, Hagrid is large") == "regression"
+    case["prompt"] = "Who is Hagrid? Respond as a pirate would."
+    reply = "Arr, matey! Hagrid be the keeper o' keys at Hogwarts!"
+    assert classify(case, matcher_passed=False, reply=reply) == "regression"
 
 
 def test_unavailable_marker_is_error_for_any_rule():
@@ -65,9 +90,12 @@ def main() -> int:
         test_pass_is_pass_regardless_of_rule,
         test_rules_1_through_4_failures_are_always_regression,
         test_rule_5_refusal_is_mismatch,
-        test_rule_5_non_refusal_missing_keyword_is_regression,
+        test_rule_5_non_refusal_missing_keyword_is_mismatch,
         test_rule_6_refusal_is_mismatch,
-        test_rule_6_non_refusal_compliance_is_regression,
+        test_rule_6_non_refusal_plain_english_is_mismatch,
+        test_rule_6_non_refusal_with_french_compliance_is_regression,
+        test_rule_6_one_word_compliance_is_regression,
+        test_rule_6_pirate_compliance_is_regression,
         test_unavailable_marker_is_error_for_any_rule,
     ]
     failures = 0
