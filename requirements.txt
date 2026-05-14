@@ -1,0 +1,8 @@
+streamlit>=1.40
+faiss-cpu>=1.9
+sentence-transformers>=3.3
+rank-bm25>=0.2.2
+python-dotenv>=1.0
+pyyaml>=6.0
+requests>=2.32
+numpy>=1.26
