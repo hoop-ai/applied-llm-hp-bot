@@ -16,15 +16,76 @@ A retrieval-augmented Harry Potter chatbot built for **COP4921 Applied Large Lan
 
 ## Quickstart
 
+Prerequisites: **Python 3.11+** and **git**. No other system packages required.
+
+### 1. Clone
+
+```bash
+git clone https://github.com/hoop-ai/applied-llm-hp-bot.git
+cd applied-llm-hp-bot
+```
+
+### 2. Create a virtual environment (recommended)
+
+**macOS / Linux:**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+**Windows (PowerShell):**
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+### 3. Install dependencies
+
 ```bash
 pip install -r requirements.txt
-cp .env.example .env          # then open .env and paste your OpenRouter key
+```
+
+### 4. Get a free OpenRouter API key
+
+1. Sign up at <https://openrouter.ai/> (Google / GitHub login is fastest).
+2. Open <https://openrouter.ai/keys> → **Create Key** → copy the `sk-or-v1-…` string.
+3. No credit card needed; the default model used here is on the free tier.
+
+### 5. Configure `.env`
+
+Copy the template and paste in your key:
+
+**macOS / Linux:**
+
+```bash
+cp .env.example .env
+```
+
+**Windows (PowerShell):**
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Open `.env` in any editor and set:
+
+```
+OPENROUTER_API_KEY=sk-or-v1-…paste-yours-here…
+```
+
+Leave the other values at their defaults. `.env` is gitignored so it stays out of the repo.
+
+### 6. Run the app
+
+```bash
 streamlit run app.py
 ```
 
-Get a free OpenRouter key at <https://openrouter.ai/keys>. The default model `z-ai/glm-4.5-air:free` works on the free tier; the client falls through six more free models, then `anthropic/claude-haiku-4.5` as a paid tail.
+Streamlit opens at <http://localhost:8501>. **First launch takes 60–90 seconds** — it downloads the embedding model (~80 MB) and builds both FAISS indices. After that, `st.cache_resource` keeps the bundle warm and turns are instant. Most queries hit the Stage-A cache and never spend an API credit.
 
-First launch downloads the embedding model (~80 MB) and builds the FAISS indices — expect 60–90 seconds on Windows. After that, `st.cache_resource` keeps the bundle warm and turns are instant. Most queries hit the Stage-A cache and never spend an API credit.
+The client falls through six more free models, then `anthropic/claude-haiku-4.5` as a paid tail (cents per 40-case eval, never reached in normal use).
 
 ## How it works
 

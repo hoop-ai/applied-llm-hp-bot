@@ -7,26 +7,61 @@
 
 A one-page checklist for grading. Full detail in [README.md](README.md) and [REPORT.md](REPORT.md).
 
-## 1. Install (one minute)
+## 1. Install (two minutes)
+
+Prerequisites: **Python 3.11+** and **git**. No system packages required.
+
+```bash
+git clone https://github.com/hoop-ai/applied-llm-hp-bot.git
+cd applied-llm-hp-bot
+```
+
+Create and activate a virtual environment:
+
+**macOS / Linux:**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+**Windows (PowerShell):**
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Python 3.11+. All dependencies are pure-pip; no system packages required.
-
 ## 2. API key
 
-Create `.env` from the template and paste in your own OpenRouter key:
+Get a free OpenRouter key (30 seconds, no credit card):
+
+1. Sign up at <https://openrouter.ai/>.
+2. Open <https://openrouter.ai/keys> → **Create Key** → copy the `sk-or-v1-…` string.
+
+Copy the template and paste in your key:
+
+**macOS / Linux:**
 
 ```bash
 cp .env.example .env
-# then edit .env and set OPENROUTER_API_KEY=sk-or-v1-...
 ```
 
-A free key takes 30 seconds at <https://openrouter.ai/keys>. `.env` is gitignored so it won't leak into the public repo. Most queries are served from the Stage-A cache and never hit the API at all.
+**Windows (PowerShell):**
 
-The default model is `z-ai/glm-4.5-air:free`. The client falls through five more free models if the primary is rate-limited, then `anthropic/claude-haiku-4.5` as a paid tail (cents per 40-case eval, never reached in normal use).
+```powershell
+Copy-Item .env.example .env
+```
+
+Open `.env` and set `OPENROUTER_API_KEY=sk-or-v1-…`. Leave the other values at their defaults. `.env` is gitignored so it stays out of the public repo.
+
+The default model is `z-ai/glm-4.5-air:free`. The client falls through five more free models if the primary is rate-limited, then `anthropic/claude-haiku-4.5` as a paid tail (cents per 40-case eval, never reached in normal use). Most queries are served from the Stage-A cache and never hit the API at all.
 
 ## 3. Run the chat
 
@@ -34,7 +69,7 @@ The default model is `z-ai/glm-4.5-air:free`. The client falls through five more
 streamlit run app.py
 ```
 
-Streamlit opens at `http://localhost:8501`. **First launch takes 60–90 seconds** (sentence-transformers + FAISS import on Windows). Subsequent turns are instant.
+Streamlit opens at <http://localhost:8501>. **First launch takes 60–90 seconds** (sentence-transformers + FAISS import on Windows). Subsequent turns are instant.
 
 ## 4. Run the eval
 
