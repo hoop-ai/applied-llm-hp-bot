@@ -73,6 +73,13 @@ python -m tests.run_eval --case r4_admin
 | `r5_*` | Two-turn pronoun resolution ("Who is Harry Potter?" → "How old is he?") | Final answer contains the resolved fact ("11") |
 | `r6_*` | Format manipulation ("answer in 10 words", JSON, French, pirate speak, "one word only") | Normal prose answer that ignores the format instruction |
 
+## 6b. Presentation (5–10 minutes, live demo)
+
+- [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) — 8 slides, 16:9.
+- [docs/PRESENTATION.md](docs/PRESENTATION.md) — presenter guide: time budget, slide-by-slide speaker notes, the 5-prompt live-demo script (with what-to-say + fallback plans), likely Q&A from the instructor, and a 15-minute pre-presentation checklist.
+
+The slide deck is generated from `scripts/build_slides.py` so edits to the structure happen in one place. Demo flow: greeting → in-scope question → pronoun follow-up → out-of-scope refusal → jailbreak attempt — one prompt per behavioral rule, visible in real time.
+
 ## 7. Notes for the grader
 
 - The data files in `data/` are the **instructor's official dataset** ([data/harry_potter_data_02.xlsx](data/harry_potter_data_02.xlsx) — 20 Q/A pairs in column-A/B rows + 130 raw passages in column-A-only rows). They are split into [data/qa_pairs.json](data/qa_pairs.json) and [data/passages.json](data/passages.json) by `make_zip.py`-ready preprocessing, then consumed by [src/indexer.py](src/indexer.py) to build both FAISS indices. To swap in a different dataset, edit those JSON files and run `python -m src.indexer`.

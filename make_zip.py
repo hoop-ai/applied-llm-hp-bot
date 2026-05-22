@@ -22,12 +22,13 @@ INCLUDE_FILES = [
     "REPORT.md",
     "REPORT-eval-new-corpus.md",
     "SUBMISSION.md",
+    "HP-Bot-presentation.pptx",
     ".env",
     ".env.example",
     ".gitignore",
     "make_zip.py",
 ]
-INCLUDE_DIRS = ["src", "tests", "data", "docs", ".streamlit"]
+INCLUDE_DIRS = ["src", "tests", "data", "docs", "scripts", ".streamlit"]
 EXCLUDE_DIR_NAMES = {"__pycache__", ".venv", "indices", ".pytest_cache", ".git"}
 EXCLUDE_FILE_SUFFIXES = {".pyc", ".pyo"}
 

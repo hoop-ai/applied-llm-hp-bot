@@ -2,7 +2,11 @@
 
 **Course:** COP4921 Applied Large Language Models 25/26
 **Project:** Harry Potter retrieval-augmented chatbot
-**Date:** 2026-05-14
+**Date:** 2026-05-14 (last eval run); 2026-05-15 (report + presentation deliverables)
+
+## TL;DR
+
+A two-stage FAISS retrieval pipeline (question-cache + hybrid full-data) gated by a regex prefilter and an LLM with a seven-model fallback chain (six free + Claude Haiku 4.5 paid tail). The bot uses **only** the instructor's dataset — no parametric leakage — and refuses cleanly when the answer isn't in the corpus. Behavioral compliance is verified by a 40-case adversarial eval: **40/40 pass, 0 regression, 0 mismatch, 0 error** on the instructor's [harry_potter_data_02.xlsx](data/harry_potter_data_02.xlsx). Live demo flow and slide deck for the 5–10 minute presentation are in [docs/PRESENTATION.md](docs/PRESENTATION.md) and [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx).
 
 ## 1. Technology stack
 
@@ -137,10 +141,10 @@ Each rule-3/5/6 case uses a substring or keyword check on the live model output;
 
 ## 7. Limitations & known issues
 
-- **Eval suite is calibrated against the seed-data wording.** A few Rule 5 multi-turn cases assert specific substrings ("intel" for Hermione, "Tom" for Voldemort, "Gryffindor" for the founders) that the instructor's corpus phrases differently or doesn't cover. The diagnostic harness flags these as `mismatch` rather than `regression` so the report stays defensible, but a future pass could swap the assertions to match the new corpus's vocabulary for a clean 40/40 number.
-- **Cold start of 60–90 seconds on Windows.** First launch imports `sentence-transformers` + `faiss` and downloads the MiniLM weights (~80 MB). Subsequent launches reuse the persisted indices and the warm Streamlit module cache, so turns are effectively instant.
-- **Free-tier rate limits.** OpenRouter's free models are shared infrastructure and occasionally return null content or 429s. The client (`src/llm.py`) walks the seven-model fallback chain on every failure (six free + a Claude Haiku 4.5 paid tail). On total failure the pipeline now surfaces a visible `⚠️ LLM service unavailable: …` message rather than silently impersonating a behavioral refusal — so the UI never crashes *and* infrastructure outages are distinguishable from real refusals.
-- **Refusal exactness is model-dependent.** Smaller free models sometimes shorten `"I cannot answer that.."` to one dot. The current default (`glm-4.5-air`) is consistent; if you swap to a 7B-class model the rule-1/2/4 pass rate may drop. The prompt quotes the string verbatim and instructs character-for-character copy, but it is not a hard guarantee.
+- **Cold start of 60–90 seconds on Windows.** First launch imports `sentence-transformers` + `faiss` and downloads the MiniLM weights (~80 MB). Subsequent launches reuse the persisted indices and the warm Streamlit module cache, so turns are effectively instant. Future work: lazy-load the embedding model so the textarea renders immediately and the first turn pays the cost.
+- **Free-tier rate limits.** OpenRouter's free models are shared infrastructure and occasionally return null content or 429s. The client (`src/llm.py`) walks the seven-model fallback chain on every failure (six free + a Claude Haiku 4.5 paid tail). On total failure the pipeline surfaces a visible `⚠️ LLM service unavailable: …` message rather than silently impersonating a behavioral refusal — so the UI never crashes *and* infrastructure outages are distinguishable from real refusals.
+- **Refusal exactness is model-dependent.** Smaller free models sometimes shorten `"I cannot answer that.."` to one dot. The current default (`glm-4.5-air`) is consistent; if you swap to a 7B-class model the rule-1/2/4 pass rate may drop. The prompt quotes the string verbatim and instructs character-for-character copy, but this is not a hard guarantee — the diagnostic's 3× retry absorbs the occasional miss.
+- **Prompt injection via retrieved content.** Retrieved chunks are inserted verbatim into the LLM context. Because the dataset is curated by the instructor, the risk is effectively zero here, but for a system retrieving from public web data I would sanitize chunks (strip imperative sentences directed at "the AI") or wrap them in a delimiter the model is trained to ignore.
 
 ## 8. How to run
 
@@ -150,8 +154,32 @@ streamlit run app.py
 ```
 
 ```bash
-python -m tests.run_eval     # adversarial eval suite
-python -m src.indexer        # rebuild indices after editing data/
+python -m tests.run_eval                   # the brief's canonical 40-case adversarial suite
+python -m tests.diagnose_eval              # smarter classifier + 3x retry → REPORT-eval-new-corpus.md
+python -m tests.test_diagnose_classifier   # 10 unit tests for the classifier
+python -m tests.e2e_playwright             # live Streamlit smoke (Playwright)
+python -m src.indexer                      # rebuild indices after editing data/
+python scripts/build_slides.py             # regenerate HP-Bot-presentation.pptx
+python make_zip.py                         # rebuild HP-Bot.zip (the shipping artifact)
 ```
 
-Full layout in `README.md`. One-page grading checklist in `SUBMISSION.md`. Design spec in `docs/superpowers/specs/2026-05-14-hp-chatbot-design.md`.
+## 9. Presentation deliverable
+
+The 5–10 minute presentation is structured as ~8 slides with speaker notes and a live demo of 5 prompts. Two artifacts:
+
+- [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) — the slide deck (8 slides, 16:9, built from `scripts/build_slides.py` so the content stays editable in one place).
+- [docs/PRESENTATION.md](docs/PRESENTATION.md) — the full presenter guide: time budget, slide-by-slide outline with speaker notes, the live-demo script (exact prompts + what to say + fallback plans), likely Q&A from the instructor, and a 15-minute pre-presentation checklist.
+
+Demo flow at a glance: greeting → in-scope question → pronoun follow-up → out-of-scope refusal → jailbreak attempt. Each prompt exercises one of the six behavioral rules and the bot's reply is visible to the instructor in real time.
+
+## 10. Where to find what
+
+| Looking for… | Open |
+|---|---|
+| 1-page grading checklist | [SUBMISSION.md](SUBMISSION.md) |
+| Brief-requirement → source line map | [README.md](README.md) §`Brief requirements` |
+| Presenter script + demo flow + Q&A | [docs/PRESENTATION.md](docs/PRESENTATION.md) |
+| Slide deck | [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) |
+| Per-case eval results (40/40) | [REPORT-eval-new-corpus.md](REPORT-eval-new-corpus.md) |
+| Architecture spec | [docs/superpowers/specs/2026-05-14-hp-chatbot-design.md](docs/superpowers/specs/2026-05-14-hp-chatbot-design.md) |
+| Live UI screenshots | [screenshots/](screenshots/) |

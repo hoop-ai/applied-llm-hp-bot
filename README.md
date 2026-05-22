@@ -118,5 +118,7 @@ Or delete the `indices/` folder — the next launch rebuilds automatically.
 - [SUBMISSION.md](SUBMISSION.md) — grading checklist
 - [REPORT.md](REPORT.md) — full project report (tech stack, flow diagram, hard parts, enjoyable parts, eval results, limitations)
 - [REPORT-eval-new-corpus.md](REPORT-eval-new-corpus.md) — generated per-case diagnostic
+- [docs/PRESENTATION.md](docs/PRESENTATION.md) — presenter guide for the 5–10 min live demo (slides outline, speaker notes, demo script, Q&A prep, pre-presentation checklist)
+- [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) — slide deck (regenerate via `python scripts/build_slides.py`)
 - [docs/superpowers/specs/](docs/superpowers/specs/) — design specs (chatbot architecture + adversarial-eval pass)
 - [docs/superpowers/plans/](docs/superpowers/plans/) — implementation plan
