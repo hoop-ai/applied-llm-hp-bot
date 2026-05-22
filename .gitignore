@@ -8,3 +8,4 @@ indices/
 .claude/
 HP-Bot.zip
 screenshots/streamlit.log
+.env

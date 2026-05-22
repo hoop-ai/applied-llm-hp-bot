@@ -18,12 +18,13 @@ A retrieval-augmented Harry Potter chatbot built for **COP4921 Applied Large Lan
 
 ```bash
 pip install -r requirements.txt
+cp .env.example .env          # then open .env and paste your OpenRouter key
 streamlit run app.py
 ```
 
-First launch downloads the embedding model (~80 MB) and builds the FAISS indices — expect 60–90 seconds on Windows. After that, `st.cache_resource` keeps the bundle warm and turns are instant.
+Get a free OpenRouter key at <https://openrouter.ai/keys>. The default model `z-ai/glm-4.5-air:free` works on the free tier; the client falls through six more free models, then `anthropic/claude-haiku-4.5` as a paid tail.
 
-The shipped [.env](.env) contains a working OpenRouter key (capped at $5; rotated when burned). Most queries hit the cache and never spend any.
+First launch downloads the embedding model (~80 MB) and builds the FAISS indices — expect 60–90 seconds on Windows. After that, `st.cache_resource` keeps the bundle warm and turns are instant. Most queries hit the Stage-A cache and never spend an API credit.
 
 ## How it works
 
@@ -93,11 +94,11 @@ python -m tests.e2e_playwright              # 5-step Streamlit smoke test (requi
 
 ## Configuration
 
-All knobs live in [.env](.env) (shipped) — copy [.env.example](.env.example) if you want a template:
+All knobs live in `.env` — copy [.env.example](.env.example) to `.env` and fill in your key:
 
 | Key | Default | Meaning |
 |---|---|---|
-| `OPENROUTER_API_KEY` | *(set)* | OpenRouter key. The shipped one is $5-capped — see [SUBMISSION.md](SUBMISSION.md) |
+| `OPENROUTER_API_KEY` | *(required)* | Your own OpenRouter key — get one free at <https://openrouter.ai/keys>. `.env` is gitignored so it won't leak. |
 | `OPENROUTER_MODEL` | `z-ai/glm-4.5-air:free` | Primary model; the client falls back through six more models on failure (final tail: `anthropic/claude-haiku-4.5`, paid but cheap) |
 | `THRESHOLD_A` | `0.85` | Stage-A cache hit threshold (cosine similarity) |
 | `TOP_K_B` | `5` | Stage-B passages retrieved as context |

@@ -17,9 +17,16 @@ Python 3.11+. All dependencies are pure-pip; no system packages required.
 
 ## 2. API key
 
-`.env` is **shipped inside the zip** with a working `OPENROUTER_API_KEY`. The key is **capped at $5 of free-tier usage**, used only for the fallback path (most queries are cached and never hit the API). It is fine if the key is exposed — when the cap is reached I rotate. To use your own key, edit `.env` and replace the value.
+Create `.env` from the template and paste in your own OpenRouter key:
 
-The default model is `z-ai/glm-4.5-air:free`. The client falls through five more free models if the primary is rate-limited.
+```bash
+cp .env.example .env
+# then edit .env and set OPENROUTER_API_KEY=sk-or-v1-...
+```
+
+A free key takes 30 seconds at <https://openrouter.ai/keys>. `.env` is gitignored so it won't leak into the public repo. Most queries are served from the Stage-A cache and never hit the API at all.
+
+The default model is `z-ai/glm-4.5-air:free`. The client falls through five more free models if the primary is rate-limited, then `anthropic/claude-haiku-4.5` as a paid tail (cents per 40-case eval, never reached in normal use).
 
 ## 3. Run the chat
 

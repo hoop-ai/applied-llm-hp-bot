@@ -1,7 +1,8 @@
 """Package the project for submission.
 
-Excludes .venv, indices, __pycache__, and the generated zip itself. Includes
-.env (user explicitly approved — the API key has a $5 cap).
+Excludes .venv, indices, __pycache__, and the generated zip itself. Does NOT
+include .env — the grader copies .env.example to .env and pastes their own
+OpenRouter key (see SUBMISSION.md §2).
 
 Usage:  python make_zip.py
 Output: HP-Bot.zip in the project root.
@@ -23,7 +24,6 @@ INCLUDE_FILES = [
     "REPORT-eval-new-corpus.md",
     "SUBMISSION.md",
     "HP-Bot-presentation.pptx",
-    ".env",
     ".env.example",
     ".gitignore",
     "make_zip.py",
