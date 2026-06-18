@@ -117,7 +117,8 @@ python -m tests.run_eval --case r4_admin
 
 ## 6b. Presentation (5–10 minutes, live demo)
 
-- [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) — 8 slides, 16:9.
+- [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) / [HP-Bot-presentation.pdf](HP-Bot-presentation.pdf) — 13 slides, 16:9. The deck order follows the brief: brief → tech stack (10a) → flow diagram (10b) → two-stage retrieval (7 & 8) → the six rules (1–6) → interface (9) → three demo slides → evaluation → difficult/enjoyed (10c). Full speaker notes are baked into every slide.
+- [HP-Bot-Report.docx](HP-Bot-Report.docx) / [HP-Bot-Report.pdf](HP-Bot-Report.pdf) — the project report (§10) as Word and PDF, with the rendered flow diagram and live-UI screenshots embedded.
 - [docs/PRESENTATION.md](docs/PRESENTATION.md) — presenter guide: time budget, slide-by-slide speaker notes, the 5-prompt live-demo script (with what-to-say + fallback plans), likely Q&A from the instructor, and a 15-minute pre-presentation checklist.
 
 The slide deck is generated from `scripts/build_slides.py` so edits to the structure happen in one place. Demo flow: greeting → in-scope question → pronoun follow-up → out-of-scope refusal → jailbreak attempt — one prompt per behavioral rule, visible in real time.

@@ -24,13 +24,20 @@ INCLUDE_FILES = [
     "REPORT-eval-new-corpus.md",
     "SUBMISSION.md",
     "HP-Bot-presentation.pptx",
+    "HP-Bot-presentation.pdf",
+    "HP-Bot-Report.docx",
+    "HP-Bot-Report.pdf",
     ".env.example",
     ".gitignore",
     "make_zip.py",
 ]
-INCLUDE_DIRS = ["src", "tests", "data", "docs", "scripts", ".streamlit"]
-EXCLUDE_DIR_NAMES = {"__pycache__", ".venv", "indices", ".pytest_cache", ".git"}
-EXCLUDE_FILE_SUFFIXES = {".pyc", ".pyo"}
+INCLUDE_DIRS = ["src", "tests", "data", "docs", "scripts", ".streamlit", "screenshots"]
+# Working/QA render folders and logs are regenerable — keep them out of the submission.
+EXCLUDE_DIR_NAMES = {
+    "__pycache__", ".venv", "indices", ".pytest_cache", ".git",
+    "slides", "report_qa", "_flowtmp",
+}
+EXCLUDE_FILE_SUFFIXES = {".pyc", ".pyo", ".log"}
 
 
 def main() -> None:

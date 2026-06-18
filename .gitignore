@@ -6,6 +6,9 @@ indices/
 .pytest_cache/
 .DS_Store
 .claude/
+.agents/
 HP-Bot.zip
 screenshots/streamlit.log
 .env
+# Office temp lock files (e.g. ~$HP-Bot-presentation.pptx)
+~$*

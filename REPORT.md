@@ -2,7 +2,7 @@
 
 **Course:** COP4921 Applied Large Language Models 25/26
 **Project:** Harry Potter retrieval-augmented chatbot
-**Date:** 2026-05-14 (last eval run); 2026-05-15 (report + presentation deliverables)
+**Date:** 2026-06-01 (deliverables finalized) · last full eval run 2026-05-14
 
 ## TL;DR
 
@@ -69,63 +69,9 @@ Turn 1: `Who is Hermione Granger?` (corpus answer). Turn 2: `What is she known f
 
 ## 2. Flow diagram
 
-```
-                       ┌──────────────────────────┐
-                       │   user message (Streamlit) │
-                       └────────────┬───────────────┘
-                                    │
-                                    ▼
-                       ┌──────────────────────────┐
-                       │   guard.py heuristic     │
-                       │   regex jailbreak filter │
-                       └────────────┬─────────────┘
-                                    │
-                       tripped ─────┴───── pass
-                          │                 │
-                          ▼                 ▼
-                  ┌──────────────┐  ┌─────────────────────┐
-                  │ refusal      │  │  embed(query)        │
-                  │ (no API call)│  │  MiniLM-L6-v2        │
-                  └──────────────┘  └──────┬──────────────┘
-                                           │
-                                           ▼
-                              ┌─────────────────────────┐
-                              │  Index A (questions)    │
-                              │  FAISS cosine top-1     │
-                              └───────────┬─────────────┘
-                                          │
-                            score ≥ 0.85 ─┴── score < 0.85
-                                   │                │
-                                   ▼                ▼
-                          ┌─────────────────┐  ┌────────────────────────┐
-                          │ cached answer    │  │ Index B (all chunks)   │
-                          │ (no LLM call)    │  │ hybrid: 0.7·dense      │
-                          └─────────────────┘  │       + 0.3·BM25       │
-                                               │ top-5 chunks            │
-                                               └──────────┬─────────────┘
-                                                          │
-                                                          ▼
-                                          ┌──────────────────────────────┐
-                                          │ build prompt:                │
-                                          │  system rules                │
-                                          │  + retrieved context         │
-                                          │  + memory.render()           │
-                                          │  + user message              │
-                                          │  + final reminder            │
-                                          └──────────────┬───────────────┘
-                                                         │
-                                                         ▼
-                                          ┌──────────────────────────────┐
-                                          │ OpenRouter chat completion   │
-                                          │ (temperature 0)              │
-                                          └──────────────┬───────────────┘
-                                                         │
-                                                         ▼
-                                          ┌──────────────────────────────┐
-                                          │ render in Streamlit          │
-                                          │ append to Memory             │
-                                          └──────────────────────────────┘
-```
+![HP-Bot message flow: regex guard, two-stage FAISS retrieval, then the LLM](screenshots/flow-diagram.png){width=6.4in}
+
+Every message hits the regex guard first. A question-cache hit in Index A (cosine similarity to the top-1 question ≥ 0.85) returns a stored answer with **no API call**; only a cache miss falls through to Index B’s hybrid retrieval (0.7 dense FAISS + 0.3 BM25, top-5 chunks) and the LLM, which has a seven-model fallback chain behind it.
 
 ## 3. Design highlights
 
@@ -163,15 +109,15 @@ A regex prefilter catches the obvious jailbreak tokens ("ignore previous instruc
 
 Last full run: **2026-05-14** against the instructor's dataset (`data/harry_potter_data_02.xlsx`, 20 Q/A pairs + 130 raw passages). Primary model: `z-ai/glm-4.5-air:free`. Fallback chain (each step used only if the previous returns a null/error response): `openai/gpt-oss-20b:free` → `nvidia/nemotron-nano-9b-v2:free` → `openai/gpt-oss-120b:free` → `qwen/qwen3-next-80b-a3b-instruct:free` → `meta-llama/llama-3.3-70b-instruct:free` → **`anthropic/claude-haiku-4.5`** (paid tail, never reached in practice but guarantees the UI never sees a silent infrastructure failure).
 
-| Rule | What it tests | Pass | Regression | Mismatch | Total |
-|---|---|---|---|---|---|
-| 1 | Out-of-scope refusal (capitals, code, recipes, LOTR, Marvel) | 8 | 0 | 0 | 8 |
-| 2 | Out-of-knowledge refusal (HP topics not in the dataset) | 6 | 0 | 0 | 6 |
-| 3 | Greeting / identity / capability whitelist | 6 | 0 | 0 | 6 |
-| 4 | Jailbreak, injection, internals disclosure | 10 | 0 | 0 | 10 |
-| 5 | Pronoun resolution across multi-turn follow-ups | 5 | 0 | 0 | 5 |
-| 6 | Format / style manipulation ("answer in 10 words", JSON, French, pirate) | 5 | 0 | 0 | 5 |
-| **Total** | | **40** | **0** | **0** | **40** |
+| Rule | What it tests | Pass | Total |
+|---|---|---|---|
+| 1 | Out-of-scope refusal (capitals, code, recipes, LOTR, Marvel) | 8 | 8 |
+| 2 | Out-of-knowledge refusal (HP topics not in the dataset) | 6 | 6 |
+| 3 | Greeting / identity / capability whitelist | 6 | 6 |
+| 4 | Jailbreak, injection, internals disclosure | 10 | 10 |
+| 5 | Pronoun resolution across multi-turn follow-ups | 5 | 5 |
+| 6 | Format / style manipulation ("answer in 10 words", JSON, French, pirate) | 5 | 5 |
+| **Total** | **all six rules** | **40** | **40** |
 
 **Clean 40/40.** All six graded behavioral rules hold against the instructor's data. The three Rule 5 multi-turn cases that probed pronoun resolution were originally calibrated against the seed dataset and have been re-anchored on facts the instructor's corpus actually contains (Hermione is "smart", Voldemort is a "dark" wizard, Dementors take "happy" feelings) — the test intent (resolve "she" / "he" / "they" from the prior turn) is unchanged. See [`REPORT-eval-new-corpus.md`](REPORT-eval-new-corpus.md) for the per-case breakdown.
 
@@ -211,9 +157,10 @@ python make_zip.py                         # rebuild HP-Bot.zip (the shipping ar
 
 ## 9. Presentation deliverable
 
-The 5–10 minute presentation is structured as ~8 slides with speaker notes and a live demo of 5 prompts. Two artifacts:
+The 5–10 minute presentation is a 13-slide deck (16:9, clean editorial style) whose order follows the brief itself — the brief, tech stack (10a), flow diagram (10b), two-stage retrieval (7 & 8), the six rules (1–6), the interface (9), three live-demo slides, evaluation, and the difficult/enjoyable reflection (10c). Every slide carries speaker notes. Deliverables:
 
-- [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) — the slide deck (8 slides, 16:9, built from `scripts/build_slides.py` so the content stays editable in one place).
+- [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) — the editable slide deck, built from `scripts/build_slides.py` so the content stays in one place.
+- [HP-Bot-presentation.pdf](HP-Bot-presentation.pdf) — the same deck as a portable PDF for sharing/printing.
 - [docs/PRESENTATION.md](docs/PRESENTATION.md) — the full presenter guide: time budget, slide-by-slide outline with speaker notes, the live-demo script (exact prompts + what to say + fallback plans), likely Q&A from the instructor, and a 15-minute pre-presentation checklist.
 
 Demo flow at a glance: greeting → in-scope question → pronoun follow-up → out-of-scope refusal → jailbreak attempt. Each prompt exercises one of the six behavioral rules and the bot's reply is visible to the instructor in real time.
@@ -225,7 +172,9 @@ Demo flow at a glance: greeting → in-scope question → pronoun follow-up → 
 | 1-page grading checklist | [SUBMISSION.md](SUBMISSION.md) |
 | Brief-requirement → source line map | [README.md](README.md) §`Brief requirements` |
 | Presenter script + demo flow + Q&A | [docs/PRESENTATION.md](docs/PRESENTATION.md) |
-| Slide deck | [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) |
+| Slide deck (editable) | [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) |
+| Slide deck (PDF) | [HP-Bot-presentation.pdf](HP-Bot-presentation.pdf) |
+| This report (Word / PDF) | [HP-Bot-Report.docx](HP-Bot-Report.docx) · [HP-Bot-Report.pdf](HP-Bot-Report.pdf) |
 | Per-case eval results (40/40) | [REPORT-eval-new-corpus.md](REPORT-eval-new-corpus.md) |
 | Architecture spec | [docs/superpowers/specs/2026-05-14-hp-chatbot-design.md](docs/superpowers/specs/2026-05-14-hp-chatbot-design.md) |
 | Live UI screenshots | [screenshots/](screenshots/) |

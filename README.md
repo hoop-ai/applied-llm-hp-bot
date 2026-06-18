@@ -301,6 +301,7 @@ Or delete the `indices/` folder — the next launch rebuilds automatically.
 - [REPORT.md](REPORT.md) — full project report (tech stack, flow diagram, hard parts, enjoyable parts, eval results, limitations)
 - [REPORT-eval-new-corpus.md](REPORT-eval-new-corpus.md) — generated per-case eval diagnostic
 - [docs/PRESENTATION.md](docs/PRESENTATION.md) — presenter guide for the 5–10 min live demo (slides outline, speaker notes, demo script, Q&A prep, pre-presentation checklist)
-- [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) — slide deck (regenerate via `python scripts/build_slides.py`)
+- [HP-Bot-presentation.pptx](HP-Bot-presentation.pptx) / [HP-Bot-presentation.pdf](HP-Bot-presentation.pdf) — 13-slide deck (regenerate via `python scripts/build_slides.py`, then `python scripts/office_export.py pptx HP-Bot-presentation.pptx HP-Bot-presentation.pdf -`)
+- [HP-Bot-Report.docx](HP-Bot-Report.docx) / [HP-Bot-Report.pdf](HP-Bot-Report.pdf) — the report as Word and PDF (built from `REPORT.md` via pandoc + `scripts/office_export.py`)
 - [docs/superpowers/specs/](docs/superpowers/specs/) — design specs (chatbot architecture + adversarial-eval pass)
 - [docs/superpowers/plans/](docs/superpowers/plans/) — implementation plan
